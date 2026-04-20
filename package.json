@@ -1,0 +1,12 @@
+{
+  "name": "ux-flow-reviewer",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "tsc -p tsconfig.plugin.json",
+    "dev": "tsc -p tsconfig.plugin.json --watch"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.90.0",
+    "typescript": "^5.2.2"
+  }
+}

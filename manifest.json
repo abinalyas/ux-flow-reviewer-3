@@ -1,0 +1,12 @@
+{
+  "name": "UX Flow Reviewer",
+  "id": "ux-flow-reviewer",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "src/ui/ui.html",
+  "networkAccess": {
+    "allowedDomains": ["https://api.anthropic.com"]
+  },
+  "editorType": ["figma"],
+  "permissions": ["currentuser"]
+}
