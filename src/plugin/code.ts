@@ -75,7 +75,7 @@ const SETTINGS_KEY = 'aiSettings';
 const IBM_PROXY_URL = 'https://application-e9.21hwt6k1vujm.us-east.codeengine.appdomain.cloud';
 const IBM_ENDPOINT = 'https://us-south.ml.cloud.ibm.com';
 const IBM_MODEL = 'ibm/granite-3-2b-instruct';
-const NETWORK_TIMEOUT_MS = 12000;
+const NETWORK_TIMEOUT_MS = 20000;
 
 const DEFAULT_SETTINGS: AISettings = {
   provider: 'ibm',
