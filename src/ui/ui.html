@@ -6,74 +6,90 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#1e1e1e;--bg2:#2c2c2c;--bg3:#383838;
-  --border:#444;--text:#e5e5e5;--text2:#999;
-  --accent:#7b61ff;--accent-h:#9580ff;
-  --amber:#f5a623;--red:#e05252;--green:#4caf7d;
-  --r:6px;--font:'Inter',-apple-system,sans-serif
+  --bg:#171717;--bg2:#222;--bg3:#2d2d2d;--bg4:#343434;
+  --border:#414141;--text:#efefef;--text2:#a7a7a7;--text3:#7d7d7d;
+  --accent:#0f62fe;--accent-h:#3d7cff;--amber:#f1c21b;--green:#42be65;--red:#fa4d56;
+  --low:#6fdc8c;--medium:#f1c21b;--high:#fa4d56;--r:8px;
+  --font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
 }
-body{font-family:var(--font);font-size:12px;background:var(--bg);color:var(--text);line-height:1.5;overflow-x:hidden}
-#app{display:flex;flex-direction:column;min-height:100vh}
-.screen{display:none;flex-direction:column;flex:1}
+html,body{height:100%}
+body{font-family:var(--font);font-size:12px;background:var(--bg);color:var(--text);line-height:1.5;overflow:hidden}
+#app{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
+.screen{display:none;flex-direction:column;flex:1;min-height:0}
 .screen.active{display:flex}
-.header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 10px;border-bottom:1px solid var(--border)}
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;border-bottom:1px solid var(--border)}
 .header-title{font-size:13px;font-weight:600}
 .header-actions{display:flex;gap:6px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:7px 14px;border-radius:var(--r);font-size:12px;font-weight:500;cursor:pointer;border:none;transition:background .15s,opacity .15s;font-family:var(--font)}
+.body,.settings-body{padding:16px;display:flex;flex-direction:column;gap:14px;flex:1;overflow:auto}
+.footer{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 14px;border-radius:var(--r);font-size:12px;font-weight:600;cursor:pointer;border:none;transition:background .15s,opacity .15s;color:var(--text);font-family:var(--font)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .btn-primary{background:var(--accent);color:#fff}
 .btn-primary:hover:not(:disabled){background:var(--accent-h)}
 .btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}
 .btn-ghost:hover:not(:disabled){background:var(--bg3);color:var(--text)}
-.btn-sm{padding:5px 10px;font-size:11px}
+.btn-secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover:not(:disabled){background:var(--bg4)}
+.btn-sm{padding:6px 10px;font-size:11px}
 .btn-icon{width:28px;height:28px;padding:0;border-radius:var(--r);background:transparent;color:var(--text2);border:1px solid transparent;font-size:14px}
 .btn-icon:hover{background:var(--bg3);color:var(--text)}
-.body{padding:16px;display:flex;flex-direction:column;gap:14px;flex:1}
 .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;flex:1;text-align:center;color:var(--text2);padding:32px 24px}
-.empty-state .icon{font-size:32px}
-.empty-state p{font-size:12px;max-width:220px;line-height:1.6}
-.banner{background:#2a2200;border:1px solid #5a4400;border-radius:var(--r);padding:9px 12px;font-size:11px;color:var(--amber);display:flex;gap:8px;align-items:flex-start}
-.breadcrumb{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:8px 12px;font-size:11px;color:var(--accent);font-family:monospace;word-break:break-word}
+.empty-state .icon{font-size:30px}
+.empty-state p{font-size:12px;max-width:240px;line-height:1.6}
+.banner{background:#2a2200;border:1px solid #5a4400;border-radius:var(--r);padding:10px 12px;font-size:11px;color:var(--amber);display:flex;gap:8px;align-items:flex-start}
+.banner.info{background:#12203f;border-color:#294d87;color:#9ac0ff}
+.breadcrumb{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:8px 12px;font-size:11px;color:#82aaff;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-word}
 .step-list{display:flex;flex-direction:column;gap:4px}
 .step-item{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:8px 10px;cursor:grab;transition:background .1s}
 .step-item:hover{background:var(--bg3)}
 .step-item.dragging{opacity:.4}
-.step-num{width:20px;height:20px;border-radius:50%;background:var(--bg3);color:var(--text2);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-num{width:20px;height:20px;border-radius:50%;background:var(--bg4);color:var(--text2);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .step-name{flex:1;font-size:12px;color:var(--text)}
 .step-drag{color:var(--border);font-size:14px}
+.section-heading{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:4px}
 .input-group{display:flex;flex-direction:column;gap:6px}
-.input-label{font-size:11px;color:var(--text2);font-weight:500}
+.input-label{font-size:11px;color:var(--text2);font-weight:600}
 .input-label span{font-weight:400}
-textarea,input[type=text],input[type=password]{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:12px;padding:8px 10px;resize:none;outline:none;width:100%;transition:border-color .15s}
-textarea:focus,input:focus{border-color:var(--accent)}
-textarea{min-height:56px;line-height:1.5}
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0}
+textarea,input[type=text],input[type=password],select{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:12px;padding:9px 10px;resize:none;outline:none;width:100%;transition:border-color .15s}
+textarea:focus,input:focus,select:focus{border-color:var(--accent)}
+textarea{min-height:62px;line-height:1.5}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;gap:12px}
 .toggle-label{font-size:12px;color:var(--text)}
 .toggle-sub{font-size:10px;color:var(--text2);margin-top:1px}
-.toggle{position:relative;width:32px;height:18px;flex-shrink:0}
+.toggle{position:relative;width:34px;height:18px;flex-shrink:0}
 .toggle input{opacity:0;width:0;height:0;position:absolute}
-.toggle-track{position:absolute;inset:0;background:var(--bg3);border-radius:9px;cursor:pointer;transition:background .2s;border:1px solid var(--border)}
+.toggle-track{position:absolute;inset:0;background:var(--bg4);border-radius:9px;cursor:pointer;transition:background .2s;border:1px solid var(--border)}
 .toggle input:checked+.toggle-track{background:var(--accent);border-color:var(--accent)}
 .toggle-thumb{position:absolute;top:2px;left:2px;width:12px;height:12px;background:#fff;border-radius:50%;transition:transform .2s;pointer-events:none}
-.toggle input:checked~.toggle-thumb{transform:translateX(14px)}
-.progress-wrap{display:flex;flex-direction:column;gap:8px;width:100%;padding:0 32px}
-.progress-bar-bg{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
-.progress-bar-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .3s ease;width:0%}
+.toggle input:checked~.toggle-thumb{transform:translateX(15px)}
+.progress-wrap{display:flex;flex-direction:column;gap:10px;width:100%;padding:0 24px}
+.progress-bar-bg{height:5px;background:var(--bg4);border-radius:999px;overflow:hidden}
+.progress-bar-fill{height:100%;background:var(--accent);border-radius:999px;transition:width .25s ease;width:0%}
 .progress-text{font-size:11px;color:var(--text2);text-align:center}
-.settings-body{padding:16px;display:flex;flex-direction:column;gap:16px}
-.api-key-row{display:flex;gap:8px;align-items:flex-end}
-.api-key-row input{flex:1}
 .settings-hint{font-size:10px;color:var(--text2);line-height:1.5}
-.settings-hint a{color:var(--accent);text-decoration:none}
+.settings-hint a{color:#8ab4ff;text-decoration:none}
 .saved-badge{display:none;font-size:11px;color:var(--green);align-items:center;gap:4px}
 .saved-badge.visible{display:flex}
-.footer{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
-.section-heading{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);margin-bottom:4px}
+.provider-note{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;font-size:11px;color:var(--text2)}
+.provider-note strong{color:var(--text)}
+.hidden{display:none!important}
+.analysis-card{display:none;flex-direction:column;gap:12px;padding:14px;border:1px solid var(--border);border-radius:12px;background:linear-gradient(180deg,#202020,#191919)}
+.analysis-card.visible{display:flex}
+.summary-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;color:var(--text2);font-size:12px}
+.issue-list{display:flex;flex-direction:column;gap:8px}
+.issue-item{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.issue-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.issue-title{font-size:12px;font-weight:600;color:var(--text)}
+.severity{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;border-radius:999px;padding:3px 8px}
+.severity.low{background:rgba(66,190,101,.14);color:var(--low)}
+.severity.medium{background:rgba(241,194,27,.14);color:var(--medium)}
+.severity.high{background:rgba(250,77,86,.14);color:var(--high)}
+.issue-frame,.issue-copy{font-size:11px;color:var(--text2)}
+.issue-copy strong{color:var(--text)}
 </style>
 </head>
 <body>
 <div id="app">
-
   <div id="screen-loading" class="screen active">
     <div class="header"><span class="header-title">UX Flow Reviewer</span></div>
     <div class="empty-state">
@@ -97,33 +113,36 @@ textarea{min-height:56px;line-height:1.5}
 
   <div id="screen-preview" class="screen">
     <div class="header">
-      <span class="header-title">Review flow</span>
+      <span class="header-title">Review Flow</span>
       <div class="header-actions">
         <button class="btn btn-icon" id="btn-settings-preview">⚙</button>
       </div>
     </div>
     <div class="body">
-      <div id="no-reactions-banner" class="banner" style="display:none">
-        ⚠ No prototype links found — using selection order. Drag to reorder.
+      <div id="no-reactions-banner" class="banner hidden">
+        ⚠ No prototype links found. Using selection order instead, so you can still review the flow.
+      </div>
+      <div id="provider-banner" class="banner info">
+        IBM watsonx is the default reviewer. Switch to your own Anthropic key in Settings if you want a custom provider.
       </div>
       <div>
-        <div class="section-heading">Detected flow</div>
+        <div class="section-heading">Detected Flow</div>
         <div id="breadcrumb" class="breadcrumb"></div>
       </div>
       <div>
-        <div class="section-heading">Steps (drag to reorder)</div>
+        <div class="section-heading">Steps</div>
         <div id="step-list" class="step-list"></div>
       </div>
       <div class="input-group">
         <label class="input-label" for="purpose-input">
-          Flow purpose <span>(optional — improves AI feedback)</span>
+          Flow purpose <span>(optional, helps the AI review against intent)</span>
         </label>
-        <textarea id="purpose-input" placeholder="e.g. Checkout flow for a subscription SaaS targeting SMBs"></textarea>
+        <textarea id="purpose-input" placeholder="e.g. Checkout flow for a B2B SaaS self-serve trial"></textarea>
       </div>
       <div class="toggle-row">
         <div>
           <div class="toggle-label">Include screenshots</div>
-          <div class="toggle-sub">Adds visual context — slightly slower</div>
+          <div class="toggle-sub">Screenshots are exported for context, though the default IBM review is still text-first.</div>
         </div>
         <label class="toggle">
           <input type="checkbox" id="toggle-screenshots" checked />
@@ -131,15 +150,29 @@ textarea{min-height:56px;line-height:1.5}
           <div class="toggle-thumb"></div>
         </label>
       </div>
+
+      <div id="analysis-card" class="analysis-card">
+        <div>
+          <div class="section-heading">AI Review</div>
+          <div id="analysis-summary" class="summary-box"></div>
+        </div>
+        <div>
+          <div class="section-heading">Issues</div>
+          <div id="issue-list" class="issue-list"></div>
+        </div>
+        <div class="footer" style="padding:0;border-top:none">
+          <button class="btn btn-secondary" id="btn-place-indicators">Place Markers In Figma</button>
+        </div>
+      </div>
     </div>
     <div class="footer">
       <button class="btn btn-ghost" id="btn-cancel">Cancel</button>
-      <button class="btn btn-primary" id="btn-analyze">Analyze flow →</button>
+      <button class="btn btn-primary" id="btn-analyze">Analyze Flow</button>
     </div>
   </div>
 
   <div id="screen-exporting" class="screen">
-    <div class="header"><span class="header-title">Preparing analysis…</span></div>
+    <div class="header"><span class="header-title">Preparing Analysis</span></div>
     <div class="empty-state">
       <div class="progress-wrap">
         <div class="progress-bar-bg"><div id="progress-fill" class="progress-bar-fill"></div></div>
@@ -157,39 +190,107 @@ textarea{min-height:56px;line-height:1.5}
     </div>
     <div class="settings-body">
       <div class="input-group">
-        <label class="input-label" for="api-key-input">Anthropic API key</label>
-        <div class="api-key-row">
-          <input type="password" id="api-key-input" placeholder="sk-ant-…" autocomplete="off" />
-          <button class="btn btn-primary btn-sm" id="btn-save-key">Save</button>
-        </div>
-        <div class="saved-badge" id="saved-badge">✓ Saved</div>
+        <label class="input-label" for="provider-select">AI provider</label>
+        <select id="provider-select">
+          <option value="ibm">IBM watsonx (default)</option>
+          <option value="anthropic">Anthropic (custom)</option>
+        </select>
+      </div>
+
+      <div id="ibm-note" class="provider-note">
+        <strong>IBM default mode</strong><br />
+        This plugin uses your existing IBM-backed proxy flow by default. You can override the proxy URL, watsonx endpoint, or model id here if your IBM setup differs.
+      </div>
+
+      <div id="ibm-config" class="input-group">
+        <label class="input-label" for="ibm-api-key-input">IBM API key <span>(optional, useful with a local proxy)</span></label>
+        <input type="password" id="ibm-api-key-input" placeholder="Your IBM Cloud API key" autocomplete="off" />
+        <label class="input-label" for="ibm-proxy-url-input">IBM proxy URL</label>
+        <input type="text" id="ibm-proxy-url-input" placeholder="https://your-code-engine-url.codeengine.appdomain.cloud" />
+        <label class="input-label" for="ibm-endpoint-input">IBM watsonx endpoint</label>
+        <input type="text" id="ibm-endpoint-input" placeholder="https://us-south.ml.cloud.ibm.com" />
+        <label class="input-label" for="ibm-model-id-input">IBM model id</label>
+        <input type="text" id="ibm-model-id-input" placeholder="ibm/granite-3-2b-instruct" />
         <p class="settings-hint">
-          Stored locally in Figma only — sent directly to
-          <a href="https://api.anthropic.com" target="_blank">api.anthropic.com</a>.
-          Get a key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>.
+          The default model is now <code>ibm/granite-3-2b-instruct</code>. If your watsonx project supports a different model, put that API model id here.
         </p>
       </div>
+
+      <div id="anthropic-config" class="input-group hidden">
+        <label class="input-label" for="anthropic-api-key-input">Anthropic API key</label>
+        <div class="input-group">
+          <input type="password" id="anthropic-api-key-input" placeholder="sk-ant-…" autocomplete="off" />
+          <p class="settings-hint">
+            Stored locally in Figma only. Used when the provider is set to Anthropic.
+          </p>
+        </div>
+      </div>
+
+      <div class="saved-badge" id="saved-badge">✓ Settings saved</div>
+      <p class="settings-hint">
+        Default IBM review uses the same watsonx-style connection pattern as your existing table plugin.
+      </p>
+    </div>
+    <div class="footer">
+      <button class="btn btn-primary btn-sm" id="btn-save-settings">Save Settings</button>
     </div>
   </div>
-
 </div>
+
 <script>
 var currentFlow = null;
-var apiKey = '';
+var currentResult = null;
+var currentSettings = {
+  provider: 'ibm',
+  anthropicApiKey: '',
+  ibmApiKey: '',
+  ibmProxyUrl: 'https://application-e9.21hwt6k1vujm.us-east.codeengine.appdomain.cloud',
+  ibmEndpoint: 'https://us-south.ml.cloud.ibm.com',
+  ibmModelId: 'ibm/granite-3-2b-instruct'
+};
 var hadNoReactions = false;
+var hasBootstrapped = false;
 
 function send(msg) {
   parent.postMessage({ pluginMessage: msg }, '*');
 }
 
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.screen').forEach(function(el) {
+    el.classList.remove('active');
+    el.style.display = 'none';
+  });
   var el = document.getElementById('screen-' + id);
-  if (el) el.classList.add('active');
+  if (el) {
+    el.classList.add('active');
+    el.style.display = 'flex';
+  }
 }
 
 function esc(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function updateProviderUI() {
+  var provider = document.getElementById('provider-select').value;
+  document.getElementById('anthropic-config').classList.toggle('hidden', provider !== 'anthropic');
+  document.getElementById('ibm-note').classList.toggle('hidden', provider !== 'ibm');
+  document.getElementById('ibm-config').classList.toggle('hidden', provider !== 'ibm');
+  document.getElementById('provider-banner').textContent =
+    provider === 'anthropic'
+      ? 'Using your custom Anthropic provider for reviews.'
+      : 'IBM watsonx is the default reviewer. Switch to your own Anthropic key in Settings if you want a custom provider.';
+}
+
+function applySettings(settings) {
+  currentSettings = settings || currentSettings;
+  document.getElementById('provider-select').value = currentSettings.provider || 'ibm';
+  document.getElementById('anthropic-api-key-input').value = currentSettings.anthropicApiKey || '';
+  document.getElementById('ibm-api-key-input').value = currentSettings.ibmApiKey || '';
+  document.getElementById('ibm-proxy-url-input').value = currentSettings.ibmProxyUrl || '';
+  document.getElementById('ibm-endpoint-input').value = currentSettings.ibmEndpoint || '';
+  document.getElementById('ibm-model-id-input').value = currentSettings.ibmModelId || '';
+  updateProviderUI();
 }
 
 function renderFlowPreview(flow) {
@@ -203,13 +304,13 @@ function renderFlowPreview(flow) {
     item.draggable = true;
     item.dataset.id = step.id;
     item.innerHTML =
-      '<div class="step-num">' + (i+1) + '</div>' +
+      '<div class="step-num">' + (i + 1) + '</div>' +
       '<div class="step-name">' + esc(step.name) + '</div>' +
       '<div class="step-drag">⠿</div>';
     list.appendChild(item);
   });
   initDrag(list);
-  document.getElementById('no-reactions-banner').style.display = hadNoReactions ? 'flex' : 'none';
+  document.getElementById('no-reactions-banner').classList.toggle('hidden', !hadNoReactions);
   showScreen('preview');
 }
 
@@ -222,7 +323,7 @@ function initDrag(list) {
   list.addEventListener('dragover', function(e) {
     e.preventDefault();
     var target = e.target.closest('.step-item');
-    if (!target || target === dragEl) return;
+    if (!dragEl || !target || target === dragEl) return;
     var mid = target.getBoundingClientRect().top + target.getBoundingClientRect().height / 2;
     list.insertBefore(dragEl, e.clientY < mid ? target : target.nextSibling);
   });
@@ -240,14 +341,57 @@ function updateProgress(current, total) {
   document.getElementById('progress-text').textContent = 'Exporting frame ' + current + ' of ' + total + '…';
 }
 
+function showAnalysisProgress(message) {
+  showScreen('exporting');
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('progress-text').textContent = message;
+}
+
+function renderAnalysis(result) {
+  currentResult = result;
+  var summary = document.getElementById('analysis-summary');
+  var issueList = document.getElementById('issue-list');
+  var card = document.getElementById('analysis-card');
+
+  summary.textContent = result.summary || 'Analysis completed.';
+  issueList.innerHTML = '';
+
+  if (!result.issues || result.issues.length === 0) {
+    issueList.innerHTML = '<div class="issue-item"><div class="issue-copy">No major UX issues were flagged for this flow.</div></div>';
+  } else {
+    result.issues.forEach(function(issue) {
+      var step = (currentFlow && currentFlow.steps || []).find(function(candidate) {
+        return candidate.id === issue.frameId;
+      });
+      var item = document.createElement('div');
+      item.className = 'issue-item';
+      item.innerHTML =
+        '<div class="issue-top">' +
+          '<div class="issue-title">' + esc(issue.label) + '</div>' +
+          '<div class="severity ' + esc(issue.severity) + '">' + esc(issue.severity) + '</div>' +
+        '</div>' +
+        '<div class="issue-frame">Frame: ' + esc(step ? step.name : issue.frameId) + '</div>' +
+        '<div class="issue-copy"><strong>Why it matters:</strong> ' + esc(issue.details) + '</div>' +
+        '<div class="issue-copy"><strong>Suggestion:</strong> ' + esc(issue.suggestion) + '</div>';
+      issueList.appendChild(item);
+    });
+  }
+
+  card.classList.add('visible');
+  showScreen('preview');
+}
+
 window.onmessage = function(event) {
   var msg = event.data && event.data.pluginMessage;
   if (!msg) return;
+
   switch (msg.type) {
     case 'SETTINGS_LOADED':
-      apiKey = msg.apiKey || '';
-      document.getElementById('api-key-input').value = apiKey;
-      send({ type: 'READY' });
+      applySettings(msg.settings || {});
+      if (!hasBootstrapped) {
+        hasBootstrapped = true;
+        send({ type: 'READY' });
+      }
       break;
     case 'NO_FRAMES_SELECTED':
       showScreen('empty');
@@ -264,11 +408,18 @@ window.onmessage = function(event) {
       break;
     case 'EXPORT_DONE':
       currentFlow = msg.flow;
-      window.dispatchEvent(new CustomEvent('flow-ready', { detail: msg.flow }));
+      send({ type: 'ANALYZE_FLOW', flow: msg.flow });
+      break;
+    case 'ANALYSIS_PROGRESS':
+      showAnalysisProgress(msg.message);
+      break;
+    case 'ANALYSIS_DONE':
+      renderAnalysis(msg.result);
       break;
     case 'EXPORT_ERROR':
+    case 'ANALYSIS_ERROR':
       showScreen('empty');
-      document.getElementById('empty-message').textContent = 'Export error: ' + msg.message;
+      document.getElementById('empty-message').textContent = msg.message || 'Something went wrong.';
       break;
   }
 };
@@ -276,29 +427,53 @@ window.onmessage = function(event) {
 document.getElementById('btn-analyze').addEventListener('click', function() {
   if (!currentFlow) return;
   var purpose = document.getElementById('purpose-input').value.trim();
-  if (purpose) currentFlow = Object.assign({}, currentFlow, { flowPurpose: purpose });
+  if (purpose) {
+    currentFlow = Object.assign({}, currentFlow, { flowPurpose: purpose });
+  }
+  currentResult = null;
+  document.getElementById('analysis-card').classList.remove('visible');
   var skipScreenshots = !document.getElementById('toggle-screenshots').checked;
   showScreen('exporting');
   updateProgress(0, currentFlow.steps.length);
   send({ type: 'CONFIRM_FLOW', flow: currentFlow, skipScreenshots: skipScreenshots });
 });
 
+document.getElementById('btn-place-indicators').addEventListener('click', function() {
+  if (!currentResult || !currentResult.issues || currentResult.issues.length === 0) return;
+  send({
+    type: 'PLACE_INDICATORS',
+    issues: currentResult.issues.map(function(issue) {
+      return {
+        frameId: issue.frameId,
+        label: (issue.severity === 'high' ? 'High: ' : issue.severity === 'medium' ? 'Med: ' : 'Low: ') + issue.label
+      };
+    })
+  });
+});
+
 document.getElementById('btn-settings-empty').addEventListener('click', function() { showScreen('settings'); });
 document.getElementById('btn-settings-preview').addEventListener('click', function() { showScreen('settings'); });
 document.getElementById('btn-settings-back').addEventListener('click', function() {
   showScreen(currentFlow ? 'preview' : 'loading');
-  send({ type: 'READY' });
 });
-document.getElementById('btn-save-key').addEventListener('click', function() {
-  apiKey = document.getElementById('api-key-input').value.trim();
-  send({ type: 'SAVE_API_KEY', apiKey: apiKey });
+document.getElementById('provider-select').addEventListener('change', updateProviderUI);
+document.getElementById('btn-save-settings').addEventListener('click', function() {
+  var settings = {
+    provider: document.getElementById('provider-select').value,
+    anthropicApiKey: document.getElementById('anthropic-api-key-input').value.trim(),
+    ibmApiKey: document.getElementById('ibm-api-key-input').value.trim(),
+    ibmProxyUrl: document.getElementById('ibm-proxy-url-input').value.trim(),
+    ibmEndpoint: document.getElementById('ibm-endpoint-input').value.trim(),
+    ibmModelId: document.getElementById('ibm-model-id-input').value.trim()
+  };
+  send({ type: 'SAVE_SETTINGS', settings: settings });
   var badge = document.getElementById('saved-badge');
   badge.classList.add('visible');
   setTimeout(function() { badge.classList.remove('visible'); }, 2000);
 });
 document.getElementById('btn-cancel').addEventListener('click', function() { send({ type: 'CANCEL' }); });
 
-window.__getApiKey = function() { return apiKey; };
+updateProviderUI();
 </script>
 </body>
 </html>

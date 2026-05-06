@@ -2,6 +2,12 @@ node_modules/
 dist/
 .DS_Store
 .env
+.env.*
+!.env.example
 *.log
 coverage/
 build/
+.idea/
+.vscode/
+*.tmp
+*.swp

@@ -5,7 +5,14 @@
   "main": "dist/code.js",
   "ui": "src/ui/ui.html",
   "networkAccess": {
-    "allowedDomains": ["https://api.anthropic.com"]
+    "allowedDomains": [
+      "https://api.anthropic.com",
+      "https://us-south.ml.cloud.ibm.com",
+      "https://application-e9.21hwt6k1vujm.us-east.codeengine.appdomain.cloud"
+    ],
+    "devAllowedDomains": [
+      "http://localhost:3000"
+    ]
   },
   "editorType": ["figma"],
   "permissions": ["currentuser"]
