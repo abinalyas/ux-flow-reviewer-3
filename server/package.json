@@ -1,0 +1,17 @@
+{
+  "name": "ux-flow-reviewer-proxy",
+  "version": "1.0.0",
+  "description": "IBM watsonx proxy for the UX Flow Reviewer Figma plugin",
+  "main": "proxy-server.js",
+  "scripts": {
+    "start": "node proxy-server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "node-fetch": "^2.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

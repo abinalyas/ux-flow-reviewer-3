@@ -11,3 +11,4 @@ build/
 .vscode/
 *.tmp
 *.swp
+server/node_modules/
