@@ -11,18 +11,26 @@ interface FlowGraph {
   steps: FlowStep[];
   breadcrumb: string;
   flowPurpose?: string;
+  reviewMode?: 'hybrid' | 'screenshot';
+  issueClarifications?: Record<string, string>;
 }
 
 interface IndicatorPayload {
   frameId: string;
   label: string;
+  targetText?: string;
+  evidence?: string;
 }
 
-type AIProvider = 'ibm' | 'anthropic';
+type AIProvider = 'ibm' | 'anthropic' | 'openai' | 'gemini';
 
 interface AISettings {
   provider: AIProvider;
   anthropicApiKey: string;
+  geminiApiKey: string;
+  geminiModelId: string;
+  openaiApiKey: string;
+  openaiModelId: string;
   ibmApiKey: string;
   ibmProxyUrl: string;
   ibmEndpoint: string;
@@ -37,6 +45,9 @@ interface AnalysisIssue {
   severity: IssueSeverity;
   details: string;
   suggestion: string;
+  evidence: string;
+  confidence: number;
+  targetText?: string;
 }
 
 interface AnalysisResult {
@@ -65,21 +76,32 @@ type UIToPlugin =
   | { type: 'SAVE_SETTINGS'; settings: Partial<AISettings> }
   | { type: 'LOAD_SETTINGS' }
   | { type: 'REORDER_STEPS'; orderedIds: string[] }
-  | { type: 'PLACE_INDICATORS'; issues: IndicatorPayload[] };
+  | { type: 'PLACE_INDICATORS'; issues: IndicatorPayload[] }
+  | { type: 'JUMP_TO_FRAME'; frameId: string };
 
 const MAX_DEPTH = 10;
 const EXPORT_SCALE = 0.5;
 const MAX_PAYLOAD_KB = 800;
 const INDICATOR_TAG = '⚠ UX Issue';
 const SETTINGS_KEY = 'aiSettings';
-const IBM_PROXY_URL = 'https://application-e9.21hwt6k1vujm.us-east.codeengine.appdomain.cloud';
+const IBM_PROXY_URL = 'https://ux-review-figma-app.29kmlt3ii3a9.us-east.codeengine.appdomain.cloud';
 const IBM_ENDPOINT = 'https://us-south.ml.cloud.ibm.com';
-const IBM_MODEL = 'ibm/granite-3-2b-instruct';
+const IBM_MODEL = 'ibm/granite-3-8b-instruct';
+const GEMINI_MODEL = 'gemini-2.5-pro';
+const OPENAI_MODEL = 'gpt-4.1-mini';
 const NETWORK_TIMEOUT_MS = 20000;
+const LEGACY_IBM_MODELS = new Set([
+  'ibm/granite-3-2b-instruct',
+  'ibm/granite-3-3-8b-instruct',
+]);
 
 const DEFAULT_SETTINGS: AISettings = {
   provider: 'ibm',
   anthropicApiKey: '',
+  geminiApiKey: '',
+  geminiModelId: GEMINI_MODEL,
+  openaiApiKey: '',
+  openaiModelId: OPENAI_MODEL,
   ibmApiKey: '',
   ibmProxyUrl: IBM_PROXY_URL,
   ibmEndpoint: IBM_ENDPOINT,
@@ -102,6 +124,7 @@ function extractText(node: SceneNode): string[] {
   const texts: string[] = [];
 
   function walk(n: SceneNode): void {
+    if ('visible' in n && !n.visible) return;
     if (n.type === 'TEXT') {
       const t = n.characters.trim();
       if (t.length > 0 && !texts.includes(t)) texts.push(t);
@@ -280,6 +303,49 @@ async function exportScreenshots(
   return { ...flow, steps: updatedSteps };
 }
 
+function findBestTextAnchor(frame: FrameNode, indicator: IndicatorPayload): TextNode | null {
+  const evidenceQuery = `${indicator.targetText ?? ''} ${indicator.evidence ?? ''}`.toLowerCase();
+  const tokens = evidenceQuery
+    .split(/[^a-z0-9]+/)
+    .map(token => token.trim())
+    .filter(token => token.length >= 3);
+
+  if (tokens.length === 0) return null;
+
+  let bestNode: TextNode | null = null;
+  let bestScore = 0;
+
+  function visit(node: SceneNode): void {
+    if (node.type === 'TEXT') {
+      const text = node.characters.trim().toLowerCase();
+      if (!text) return;
+
+      let score = 0;
+      for (const token of tokens) {
+        if (text.includes(token)) score++;
+      }
+
+      if (indicator.targetText && text.includes(indicator.targetText.toLowerCase())) {
+        score += 3;
+      }
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestNode = node;
+      }
+    }
+
+    if ('children' in node) {
+      for (const child of (node as ChildrenMixin).children) {
+        visit(child as SceneNode);
+      }
+    }
+  }
+
+  visit(frame);
+  return bestScore >= 2 ? bestNode : null;
+}
+
 async function placeIndicators(indicators: IndicatorPayload[]): Promise<void> {
   figma.currentPage.findAll(node => node.name.startsWith(INDICATOR_TAG)).forEach(node => node.remove());
 
@@ -292,10 +358,20 @@ async function placeIndicators(indicators: IndicatorPayload[]): Promise<void> {
     badge.name = `${INDICATOR_TAG}: ${frame.name}`;
     badge.resize(Math.min(frame.width, 240), 36);
 
-    const bbox = frame.absoluteBoundingBox;
-    if (bbox) {
-      badge.x = bbox.x;
-      badge.y = bbox.y - 44;
+    const frameBbox = frame.absoluteBoundingBox;
+    const anchor = findBestTextAnchor(frame, indicator);
+    const anchorBbox = anchor?.absoluteBoundingBox ?? null;
+    if (anchorBbox && frameBbox) {
+      const padding = 8;
+      const maxX = frameBbox.x + Math.max(0, frame.width - badge.width - padding);
+      const minX = frameBbox.x + padding;
+      const maxY = frameBbox.y + Math.max(0, frame.height - badge.height - padding);
+      const minY = frameBbox.y + padding;
+      badge.x = Math.min(Math.max(minX, anchorBbox.x), maxX);
+      badge.y = Math.min(Math.max(minY, anchorBbox.y - badge.height - 6), maxY);
+    } else if (frameBbox) {
+      badge.x = frameBbox.x + 8;
+      badge.y = frameBbox.y + 8;
     }
 
     badge.fills = [{ type: 'SOLID', color: { r: 1, g: 0.76, b: 0.03 } }];
@@ -316,14 +392,29 @@ async function placeIndicators(indicators: IndicatorPayload[]): Promise<void> {
   }
 }
 
+function jumpToFrame(frameId: string): void {
+  const node = figma.getNodeById(frameId);
+  if (!node || node.type !== 'FRAME') return;
+  figma.currentPage.selection = [node];
+  figma.viewport.scrollAndZoomIntoView([node]);
+}
+
 function sanitizeSettings(raw: Partial<AISettings> | null | undefined): AISettings {
+  const incomingModelId =
+    typeof raw?.ibmModelId === 'string' && raw.ibmModelId.trim() ? raw.ibmModelId.trim() : IBM_MODEL;
+  const migratedModelId = LEGACY_IBM_MODELS.has(incomingModelId) ? IBM_MODEL : incomingModelId;
+
   return {
-    provider: raw?.provider === 'anthropic' ? 'anthropic' : 'ibm',
+    provider: raw?.provider === 'anthropic' || raw?.provider === 'openai' || raw?.provider === 'gemini' ? raw.provider : 'ibm',
     anthropicApiKey: typeof raw?.anthropicApiKey === 'string' ? raw.anthropicApiKey : '',
+    geminiApiKey: typeof raw?.geminiApiKey === 'string' ? raw.geminiApiKey : '',
+    geminiModelId: typeof raw?.geminiModelId === 'string' && raw.geminiModelId.trim() ? raw.geminiModelId.trim() : GEMINI_MODEL,
+    openaiApiKey: typeof raw?.openaiApiKey === 'string' ? raw.openaiApiKey : '',
+    openaiModelId: typeof raw?.openaiModelId === 'string' && raw.openaiModelId.trim() ? raw.openaiModelId.trim() : OPENAI_MODEL,
     ibmApiKey: typeof raw?.ibmApiKey === 'string' ? raw.ibmApiKey : '',
     ibmProxyUrl: typeof raw?.ibmProxyUrl === 'string' && raw.ibmProxyUrl.trim() ? raw.ibmProxyUrl.trim() : IBM_PROXY_URL,
     ibmEndpoint: typeof raw?.ibmEndpoint === 'string' && raw.ibmEndpoint.trim() ? raw.ibmEndpoint.trim() : IBM_ENDPOINT,
-    ibmModelId: typeof raw?.ibmModelId === 'string' && raw.ibmModelId.trim() ? raw.ibmModelId.trim() : IBM_MODEL,
+    ibmModelId: migratedModelId,
   };
 }
 
@@ -341,30 +432,58 @@ async function saveSettings(partial: Partial<AISettings>): Promise<AISettings> {
 }
 
 function buildAnalysisPrompt(flow: FlowGraph): string {
+  const reviewMode = flow.reviewMode === 'screenshot' ? 'screenshot' : 'hybrid';
   const stepsPayload = flow.steps.map((step, index) => ({
     frameId: step.id,
     frameName: step.name,
-    visibleText: step.textContent.slice(0, 24),
+    visibleText: reviewMode === 'screenshot' ? [] : step.textContent.slice(0, 40),
     hasScreenshot: Boolean(step.screenshot),
   }));
 
   return [
     'You are a senior UX reviewer auditing a Figma user flow.',
     'Review the flow for friction, clarity, trust, accessibility, and conversion issues.',
-    'Focus on concrete problems visible from the frame names and extracted text.',
+    reviewMode === 'screenshot'
+      ? 'Use only what is visibly rendered in the screenshots and frame names. Ignore hidden layers, extracted text not visible on the screenshot, backend behavior, and non-visible UI.'
+      : 'Focus only on concrete problems supported by the provided frame names and extracted visible text.',
+    'Important: do not assume hidden UI, backend behavior, or controls that are not explicitly present in the evidence.',
+    'Do not mention search, filters, tooltips, menus, sorting, notifications, ratings, reviews, or other features unless the exact feature is clearly named in the provided text evidence.',
+    'If evidence is incomplete, prefer fewer issues over speculative issues.',
     'Return only valid JSON with this exact shape:',
-    '{"summary":"string","issues":[{"frameId":"string","label":"string","severity":"high|medium|low","details":"string","suggestion":"string"}]}',
+    '{"summary":"string","issues":[{"frameId":"string","label":"string","severity":"high|medium|low","confidence":0.0,"evidence":"string","targetText":"string","details":"string","suggestion":"string"}]}',
     'Rules:',
     '- Keep summary under 120 words.',
     '- Include at most 6 issues.',
     '- label must be short, 2-6 words.',
     '- Use only frameId values from the provided steps.',
     '- If there are no meaningful issues, return an empty issues array.',
+    '- Every issue must be grounded in explicit words from visibleText or frameName.',
+    '- Never claim a feature exists unless its name appears in the evidence.',
+    '- confidence must be a number from 0 to 1.',
+    '- evidence must describe the exact visible text or screenshot cue that supports the finding.',
+    '- targetText should be the most relevant visible text snippet to anchor a marker near. Use an empty string if there is no clear text anchor.',
     '',
+    `Review mode: ${reviewMode}`,
     `Flow purpose: ${flow.flowPurpose || 'Not provided'}`,
+    `Issue clarifications: ${flow.issueClarifications && Object.keys(flow.issueClarifications).length ? JSON.stringify(flow.issueClarifications) : 'None provided'}`,
     `Breadcrumb: ${flow.breadcrumb}`,
     `Steps: ${JSON.stringify(stepsPayload)}`,
   ].join('\n');
+}
+
+function mentionsUnsupportedFeature(issueText: string, evidenceText: string): boolean {
+  const checks = [
+    { keywords: ['search'], evidence: ['search'] },
+    { keywords: ['tooltip'], evidence: ['tooltip'] },
+    { keywords: ['filter', 'filters', 'filtering'], evidence: ['filter'] },
+    { keywords: ['sort', 'sorting'], evidence: ['sort'] },
+  ];
+
+  return checks.some(check => {
+    const mentionsKeyword = check.keywords.some(keyword => issueText.includes(keyword));
+    if (!mentionsKeyword) return false;
+    return !check.evidence.some(keyword => evidenceText.includes(keyword));
+  });
 }
 
 function extractJsonObject(text: string): string | null {
@@ -409,6 +528,17 @@ function normalizeSeverity(value: unknown): IssueSeverity {
   return 'medium';
 }
 
+function normalizeConfidence(value: unknown): number {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return Math.max(0, Math.min(1, value));
+  }
+  if (typeof value === 'string') {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) return Math.max(0, Math.min(1, parsed));
+  }
+  return 0.6;
+}
+
 function parseAnalysisResult(rawText: string, flow: FlowGraph, provider: AIProvider): AnalysisResult {
   const jsonText = extractJsonObject(rawText);
   if (!jsonText) throw new Error('The AI response did not include valid JSON.');
@@ -419,6 +549,9 @@ function parseAnalysisResult(rawText: string, flow: FlowGraph, provider: AIProvi
       frameId?: unknown;
       label?: unknown;
       severity?: unknown;
+      confidence?: unknown;
+      evidence?: unknown;
+      targetText?: unknown;
       details?: unknown;
       suggestion?: unknown;
     }>;
@@ -426,6 +559,11 @@ function parseAnalysisResult(rawText: string, flow: FlowGraph, provider: AIProvi
 
   const frameIds = new Set(flow.steps.map(step => step.id));
   const issues = Array.isArray(parsed.issues) ? parsed.issues : [];
+  const evidenceParts: string[] = [];
+  for (const step of flow.steps) {
+    evidenceParts.push(step.name, ...step.textContent);
+  }
+  const evidenceText = evidenceParts.join(' ').toLowerCase();
 
   return {
     provider,
@@ -437,10 +575,17 @@ function parseAnalysisResult(rawText: string, flow: FlowGraph, provider: AIProvi
         frameId: typeof issue.frameId === 'string' && frameIds.has(issue.frameId) ? issue.frameId : flow.steps[0]?.id ?? '',
         label: typeof issue.label === 'string' && issue.label.trim() ? issue.label.trim().slice(0, 80) : 'UX issue',
         severity: normalizeSeverity(issue.severity),
+        confidence: normalizeConfidence(issue.confidence),
+        evidence: typeof issue.evidence === 'string' && issue.evidence.trim() ? issue.evidence.trim() : 'Based on the visible UI evidence in this frame.',
+        targetText: typeof issue.targetText === 'string' && issue.targetText.trim() ? issue.targetText.trim().slice(0, 120) : '',
         details: typeof issue.details === 'string' && issue.details.trim() ? issue.details.trim() : 'Potential UX issue detected.',
         suggestion: typeof issue.suggestion === 'string' && issue.suggestion.trim() ? issue.suggestion.trim() : 'Review and simplify this step.',
       }))
       .filter(issue => issue.frameId)
+      .filter(issue => {
+        const combinedText = `${issue.label} ${issue.details} ${issue.suggestion}`.toLowerCase();
+        return !mentionsUnsupportedFeature(combinedText, evidenceText);
+      })
       .slice(0, 6),
   };
 }
@@ -551,6 +696,12 @@ async function analyzeWithIbm(flow: FlowGraph, onProgress: (message: string) => 
   if (!response.ok) {
     const text = await response.text();
     debugLog('ibm:analysis:bad-response', { status: response.status, body: text });
+    if (text.includes('model_not_supported')) {
+      throw new Error(
+        `IBM watsonx rejected the model "${settings.ibmModelId}". Try a supported chat model in Settings, such as ` +
+          'ibm/granite-3-8b-instruct, ibm/granite-3-2-8b-instruct, meta-llama/llama-3-1-8b-instruct, or mistralai/mistral-small-24b-instruct-2501.'
+      );
+    }
     throw new Error(`IBM watsonx request failed: ${response.status} ${text}`);
   }
 
@@ -617,6 +768,139 @@ async function analyzeWithAnthropic(
   return parseAnalysisResult(rawText, flow, 'anthropic');
 }
 
+async function analyzeWithOpenAI(
+  flow: FlowGraph,
+  apiKey: string,
+  modelId: string,
+  onProgress: (message: string) => void
+): Promise<AnalysisResult> {
+  if (!apiKey) throw new Error('Add an OpenAI API key in Settings to use OpenAI for testing.');
+
+  onProgress('Reviewing flow with OpenAI…');
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: modelId,
+      temperature: 0.2,
+      response_format: { type: 'json_object' },
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a strict JSON UX review assistant.',
+        },
+        {
+          role: 'user',
+          content: buildAnalysisPrompt(flow),
+        },
+      ],
+    }),
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`OpenAI request failed: ${response.status} ${text}`);
+  }
+
+  const data = await response.json() as {
+    choices?: Array<{ message?: { content?: string } }>;
+  };
+
+  const rawText = data.choices?.[0]?.message?.content ?? '';
+  if (!rawText) throw new Error('OpenAI returned an empty response.');
+  return parseAnalysisResult(rawText, flow, 'openai');
+}
+
+async function analyzeWithGemini(
+  flow: FlowGraph,
+  apiKey: string,
+  modelId: string,
+  onProgress: (message: string) => void
+): Promise<AnalysisResult> {
+  if (!apiKey) throw new Error('Add a Gemini API key in Settings to use Gemini for testing.');
+
+  onProgress('Reviewing flow with Gemini…');
+
+  const parts: Array<Record<string, unknown>> = [
+    { text: buildAnalysisPrompt(flow) },
+  ];
+
+  for (const step of flow.steps) {
+    if (!step.screenshot) continue;
+    parts.push({
+      inline_data: {
+        mime_type: 'image/png',
+        data: step.screenshot,
+      },
+    });
+  }
+
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelId)}:generateContent?key=${encodeURIComponent(apiKey)}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      contents: [
+        {
+          parts,
+        },
+      ],
+      generationConfig: {
+        responseMimeType: 'application/json',
+        responseJsonSchema: {
+          type: 'object',
+          properties: {
+            summary: { type: 'string', description: 'Short summary of the UX review.' },
+            issues: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  frameId: { type: 'string', description: 'One of the provided frame ids.' },
+                  label: { type: 'string', description: 'Short issue label.' },
+                  severity: { type: 'string', enum: ['high', 'medium', 'low'] },
+                  confidence: { type: 'number', description: 'Confidence from 0 to 1.' },
+                  evidence: { type: 'string', description: 'Visible text or screenshot cue supporting the finding.' },
+                  targetText: { type: 'string', description: 'Best visible text snippet to anchor a marker near.' },
+                  details: { type: 'string', description: 'Why this issue matters.' },
+                  suggestion: { type: 'string', description: 'Suggested improvement.' },
+                },
+                required: ['frameId', 'label', 'severity', 'confidence', 'evidence', 'targetText', 'details', 'suggestion'],
+              },
+            },
+          },
+          required: ['summary', 'issues'],
+        },
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Gemini request failed: ${response.status} ${text}`);
+  }
+
+  const data = await response.json() as {
+    candidates?: Array<{
+      content?: {
+        parts?: Array<{ text?: string }>;
+      };
+    }>;
+  };
+
+  const rawText = (data.candidates?.[0]?.content?.parts ?? [])
+    .map(part => typeof part.text === 'string' ? part.text : '')
+    .join('\n')
+    .trim();
+
+  if (!rawText) throw new Error('Gemini returned an empty response.');
+  return parseAnalysisResult(rawText, flow, 'gemini');
+}
+
 async function analyzeFlow(flow: FlowGraph): Promise<AnalysisResult> {
   const settings = await loadSettings();
   debugLog('analysis:dispatch', {
@@ -629,19 +913,31 @@ async function analyzeFlow(flow: FlowGraph): Promise<AnalysisResult> {
     return analyzeWithAnthropic(flow, settings.anthropicApiKey, onProgress);
   }
 
+  if (settings.provider === 'openai') {
+    return analyzeWithOpenAI(flow, settings.openaiApiKey, settings.openaiModelId, onProgress);
+  }
+
+  if (settings.provider === 'gemini') {
+    return analyzeWithGemini(flow, settings.geminiApiKey, settings.geminiModelId, onProgress);
+  }
+
   return analyzeWithIbm(flow, onProgress);
 }
 
-figma.showUI(__html__, { width: 420, height: 640, title: 'UX Flow Reviewer' });
+figma.showUI(__html__, { width: 480, height: 760, title: 'UX Flow Reviewer' });
 
 async function init(): Promise<void> {
   const settings = await loadSettings();
   debugLog('init:settings-loaded', {
     provider: settings.provider,
+    geminiModelId: settings.geminiModelId,
+    openaiModelId: settings.openaiModelId,
     ibmProxyUrl: settings.ibmProxyUrl,
     ibmEndpoint: settings.ibmEndpoint,
     ibmModelId: settings.ibmModelId,
     hasAnthropicKey: Boolean(settings.anthropicApiKey),
+    hasGeminiKey: Boolean(settings.geminiApiKey),
+    hasOpenAIKey: Boolean(settings.openaiApiKey),
     hasIbmApiKey: Boolean(settings.ibmApiKey),
   });
   sendToUI({ type: 'SETTINGS_LOADED', settings });
@@ -726,14 +1022,23 @@ figma.ui.onmessage = async (rawMsg: unknown) => {
       break;
     }
 
+    case 'JUMP_TO_FRAME': {
+      jumpToFrame(msg.frameId);
+      break;
+    }
+
     case 'SAVE_SETTINGS': {
       const settings = await saveSettings(msg.settings);
       debugLog('settings:saved', {
         provider: settings.provider,
+        geminiModelId: settings.geminiModelId,
+        openaiModelId: settings.openaiModelId,
         ibmProxyUrl: settings.ibmProxyUrl,
         ibmEndpoint: settings.ibmEndpoint,
         ibmModelId: settings.ibmModelId,
         hasAnthropicKey: Boolean(settings.anthropicApiKey),
+        hasGeminiKey: Boolean(settings.geminiApiKey),
+        hasOpenAIKey: Boolean(settings.openaiApiKey),
         hasIbmApiKey: Boolean(settings.ibmApiKey),
       });
       sendToUI({ type: 'SETTINGS_LOADED', settings });

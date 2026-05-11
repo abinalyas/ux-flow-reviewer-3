@@ -7,8 +7,11 @@
   "networkAccess": {
     "allowedDomains": [
       "https://api.anthropic.com",
+      "https://api.openai.com",
+      "https://generativelanguage.googleapis.com",
       "https://us-south.ml.cloud.ibm.com",
-      "https://application-e9.21hwt6k1vujm.us-east.codeengine.appdomain.cloud"
+      "https://application-e9.21hwt6k1vujm.us-east.codeengine.appdomain.cloud",
+      "https://ux-review-figma-app.29kmlt3ii3a9.us-east.codeengine.appdomain.cloud"
     ],
     "devAllowedDomains": [
       "http://localhost:3000"

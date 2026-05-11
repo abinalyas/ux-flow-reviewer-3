@@ -14,14 +14,14 @@
 }
 html,body{height:100%}
 body{font-family:var(--font);font-size:12px;background:var(--bg);color:var(--text);line-height:1.5;overflow:hidden}
-#app{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
+#app{display:flex;flex-direction:column;height:100vh;background:var(--bg)}
 .screen{display:none;flex-direction:column;flex:1;min-height:0}
 .screen.active{display:flex}
 .header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;border-bottom:1px solid var(--border)}
 .header-title{font-size:13px;font-weight:600}
 .header-actions{display:flex;gap:6px}
-.body,.settings-body{padding:16px;display:flex;flex-direction:column;gap:14px;flex:1;overflow:auto}
-.footer{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+.body,.settings-body{padding:14px 16px 18px;display:flex;flex-direction:column;gap:12px;flex:1;min-height:0;overflow:auto}
+.footer{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0;background:var(--bg)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 14px;border-radius:var(--r);font-size:12px;font-weight:600;cursor:pointer;border:none;transition:background .15s,opacity .15s;color:var(--text);font-family:var(--font)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .btn-primary{background:var(--accent);color:#fff}
@@ -52,7 +52,7 @@ body{font-family:var(--font);font-size:12px;background:var(--bg);color:var(--tex
 .input-label span{font-weight:400}
 textarea,input[type=text],input[type=password],select{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:12px;padding:9px 10px;resize:none;outline:none;width:100%;transition:border-color .15s}
 textarea:focus,input:focus,select:focus{border-color:var(--accent)}
-textarea{min-height:62px;line-height:1.5}
+textarea{min-height:54px;line-height:1.5}
 .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;gap:12px}
 .toggle-label{font-size:12px;color:var(--text)}
 .toggle-sub{font-size:10px;color:var(--text2);margin-top:1px}
@@ -73,19 +73,39 @@ textarea{min-height:62px;line-height:1.5}
 .provider-note{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;font-size:11px;color:var(--text2)}
 .provider-note strong{color:var(--text)}
 .hidden{display:none!important}
-.analysis-card{display:none;flex-direction:column;gap:12px;padding:14px;border:1px solid var(--border);border-radius:12px;background:linear-gradient(180deg,#202020,#191919)}
+.analysis-card{display:none;flex-direction:column;gap:10px;padding:12px;border:1px solid var(--border);border-radius:12px;background:linear-gradient(180deg,#202020,#191919)}
 .analysis-card.visible{display:flex}
-.summary-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;color:var(--text2);font-size:12px}
+.summary-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;color:var(--text2);font-size:12px;max-height:140px;overflow:auto}
 .issue-list{display:flex;flex-direction:column;gap:8px}
-.issue-item{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.issue-item{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 11px;display:flex;flex-direction:column;gap:6px}
+.issue-item.clickable{cursor:pointer;transition:border-color .15s,background .15s,transform .15s}
+.issue-item.clickable{width:100%;text-align:left;appearance:none;-webkit-appearance:none}
+.issue-item.clickable:hover{background:var(--bg3);border-color:#5d8fff;transform:translateY(-1px)}
+.issue-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+.issue-note{min-height:66px}
 .issue-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .issue-title{font-size:12px;font-weight:600;color:var(--text)}
+.issue-top-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 .severity{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;border-radius:999px;padding:3px 8px}
 .severity.low{background:rgba(66,190,101,.14);color:var(--low)}
 .severity.medium{background:rgba(241,194,27,.14);color:var(--medium)}
 .severity.high{background:rgba(250,77,86,.14);color:var(--high)}
 .issue-frame,.issue-copy{font-size:11px;color:var(--text2)}
 .issue-copy strong{color:var(--text)}
+.issue-evidence{font-size:11px;color:#b8d2ff;background:#1a2438;border:1px solid #2b426f;padding:8px 10px;border-radius:8px}
+.issue-evidence strong{color:#dce8ff}
+.confidence{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-radius:999px;padding:3px 8px;background:#2d3642;color:#c6d4e5}
+.confidence.high{background:rgba(66,190,101,.15);color:#8fe7a4}
+.confidence.medium{background:rgba(241,194,27,.15);color:#f3d669}
+.confidence.low{background:rgba(250,77,86,.15);color:#ff9da5}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap}
+.filter-chip{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:11px;font-weight:700;cursor:pointer}
+.filter-chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.results-meta{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.results-count{font-size:11px;color:var(--text2)}
+.empty-issues{padding:14px;border:1px dashed var(--border);border-radius:10px;color:var(--text2);font-size:11px;text-align:center}
+.rethink-status{font-size:11px;padding:10px 12px;border-radius:8px;border:1px solid #2b426f;background:#14233d;color:#cfe0ff}
+.issue-status{font-size:11px;color:#9ac0ff}
 </style>
 </head>
 <body>
@@ -139,6 +159,18 @@ textarea{min-height:62px;line-height:1.5}
         </label>
         <textarea id="purpose-input" placeholder="e.g. Checkout flow for a B2B SaaS self-serve trial"></textarea>
       </div>
+      <div class="input-group">
+        <label class="input-label" for="review-mode-select">
+          Review basis <span>(choose how strictly the reviewer should stick to visible UI)</span>
+        </label>
+        <select id="review-mode-select">
+          <option value="hybrid">Hybrid: visible text + screenshots</option>
+          <option value="screenshot">Screenshot only: visible surface only</option>
+        </select>
+        <p class="settings-hint">
+          Screenshot-only mode ignores extracted layer text as much as possible and works best when screenshots are included.
+        </p>
+      </div>
       <div class="toggle-row">
         <div>
           <div class="toggle-label">Include screenshots</div>
@@ -150,24 +182,44 @@ textarea{min-height:62px;line-height:1.5}
           <div class="toggle-thumb"></div>
         </label>
       </div>
-
-      <div id="analysis-card" class="analysis-card">
-        <div>
-          <div class="section-heading">AI Review</div>
-          <div id="analysis-summary" class="summary-box"></div>
-        </div>
-        <div>
-          <div class="section-heading">Issues</div>
-          <div id="issue-list" class="issue-list"></div>
-        </div>
-        <div class="footer" style="padding:0;border-top:none">
-          <button class="btn btn-secondary" id="btn-place-indicators">Place Markers In Figma</button>
-        </div>
-      </div>
     </div>
     <div class="footer">
       <button class="btn btn-ghost" id="btn-cancel">Cancel</button>
       <button class="btn btn-primary" id="btn-analyze">Analyze Flow</button>
+    </div>
+  </div>
+
+  <div id="screen-results" class="screen">
+    <div class="header">
+      <span class="header-title">Review Results</span>
+      <div class="header-actions">
+        <button class="btn btn-icon" id="btn-results-back">←</button>
+      </div>
+    </div>
+    <div class="body">
+      <div>
+        <div class="section-heading">AI Review</div>
+        <div id="results-summary" class="summary-box"></div>
+      </div>
+      <div id="rethink-status" class="rethink-status hidden"></div>
+      <div>
+        <div class="section-heading">Filter Issues</div>
+        <div class="filter-row">
+          <button class="filter-chip active" data-filter="all">All</button>
+          <button class="filter-chip" data-filter="high">High</button>
+          <button class="filter-chip" data-filter="medium">Medium</button>
+          <button class="filter-chip" data-filter="low">Low</button>
+        </div>
+      </div>
+      <div class="results-meta">
+        <div class="section-heading" style="margin-bottom:0">Findings</div>
+        <div id="results-count" class="results-count"></div>
+      </div>
+      <div id="results-issues" class="issue-list"></div>
+    </div>
+    <div class="footer">
+      <button class="btn btn-secondary" id="btn-place-indicators-results">Place Markers In Figma</button>
+      <button class="btn btn-primary" id="btn-results-rerun">Analyze Again</button>
     </div>
   </div>
 
@@ -193,6 +245,8 @@ textarea{min-height:62px;line-height:1.5}
         <label class="input-label" for="provider-select">AI provider</label>
         <select id="provider-select">
           <option value="ibm">IBM watsonx (default)</option>
+          <option value="gemini">Gemini Pro (testing)</option>
+          <option value="openai">OpenAI (testing)</option>
           <option value="anthropic">Anthropic (custom)</option>
         </select>
       </div>
@@ -210,9 +264,9 @@ textarea{min-height:62px;line-height:1.5}
         <label class="input-label" for="ibm-endpoint-input">IBM watsonx endpoint</label>
         <input type="text" id="ibm-endpoint-input" placeholder="https://us-south.ml.cloud.ibm.com" />
         <label class="input-label" for="ibm-model-id-input">IBM model id</label>
-        <input type="text" id="ibm-model-id-input" placeholder="ibm/granite-3-2b-instruct" />
+        <input type="text" id="ibm-model-id-input" placeholder="ibm/granite-3-8b-instruct" />
         <p class="settings-hint">
-          The default model is now <code>ibm/granite-3-2b-instruct</code>. If your watsonx project supports a different model, put that API model id here.
+          The default model is now <code>ibm/granite-3-8b-instruct</code>. If your watsonx project supports a different model, put that API model id here.
         </p>
       </div>
 
@@ -224,6 +278,26 @@ textarea{min-height:62px;line-height:1.5}
             Stored locally in Figma only. Used when the provider is set to Anthropic.
           </p>
         </div>
+      </div>
+
+      <div id="gemini-config" class="input-group hidden">
+        <label class="input-label" for="gemini-api-key-input">Gemini API key</label>
+        <input type="password" id="gemini-api-key-input" placeholder="AIza…" autocomplete="off" />
+        <label class="input-label" for="gemini-model-id-input">Gemini model id</label>
+        <input type="text" id="gemini-model-id-input" placeholder="gemini-2.5-pro" />
+        <p class="settings-hint">
+          Testing only: this sends your Gemini key directly from the plugin. The default test model is <code>gemini-2.5-pro</code>, and screenshots are sent when included.
+        </p>
+      </div>
+
+      <div id="openai-config" class="input-group hidden">
+        <label class="input-label" for="openai-api-key-input">OpenAI API key</label>
+        <input type="password" id="openai-api-key-input" placeholder="sk-…" autocomplete="off" />
+        <label class="input-label" for="openai-model-id-input">OpenAI model id</label>
+        <input type="text" id="openai-model-id-input" placeholder="gpt-4.1-mini" />
+        <p class="settings-hint">
+          Testing only: this sends your OpenAI key directly from the plugin. The default test model is <code>gpt-4.1-mini</code>.
+        </p>
       </div>
 
       <div class="saved-badge" id="saved-badge">✓ Settings saved</div>
@@ -240,13 +314,22 @@ textarea{min-height:62px;line-height:1.5}
 <script>
 var currentFlow = null;
 var currentResult = null;
+var currentFilter = 'all';
+var previousNonSettingsScreen = 'loading';
+var currentIssueClarifications = {};
+var currentIssueStatuses = {};
+var pendingRethinkIssue = null;
 var currentSettings = {
   provider: 'ibm',
   anthropicApiKey: '',
+  geminiApiKey: '',
+  geminiModelId: 'gemini-2.5-pro',
+  openaiApiKey: '',
+  openaiModelId: 'gpt-4.1-mini',
   ibmApiKey: '',
-  ibmProxyUrl: 'https://application-e9.21hwt6k1vujm.us-east.codeengine.appdomain.cloud',
+  ibmProxyUrl: 'https://ux-review-figma-app.29kmlt3ii3a9.us-east.codeengine.appdomain.cloud',
   ibmEndpoint: 'https://us-south.ml.cloud.ibm.com',
-  ibmModelId: 'ibm/granite-3-2b-instruct'
+  ibmModelId: 'ibm/granite-3-8b-instruct'
 };
 var hadNoReactions = false;
 var hasBootstrapped = false;
@@ -265,6 +348,7 @@ function showScreen(id) {
     el.classList.add('active');
     el.style.display = 'flex';
   }
+  if (id !== 'settings') previousNonSettingsScreen = id;
 }
 
 function esc(str) {
@@ -274,18 +358,39 @@ function esc(str) {
 function updateProviderUI() {
   var provider = document.getElementById('provider-select').value;
   document.getElementById('anthropic-config').classList.toggle('hidden', provider !== 'anthropic');
+  document.getElementById('gemini-config').classList.toggle('hidden', provider !== 'gemini');
+  document.getElementById('openai-config').classList.toggle('hidden', provider !== 'openai');
   document.getElementById('ibm-note').classList.toggle('hidden', provider !== 'ibm');
   document.getElementById('ibm-config').classList.toggle('hidden', provider !== 'ibm');
   document.getElementById('provider-banner').textContent =
     provider === 'anthropic'
       ? 'Using your custom Anthropic provider for reviews.'
-      : 'IBM watsonx is the default reviewer. Switch to your own Anthropic key in Settings if you want a custom provider.';
+      : provider === 'gemini'
+        ? 'Using Gemini Pro in testing mode with screenshot-aware review.'
+      : provider === 'openai'
+        ? 'Using OpenAI in testing mode so you can compare review quality.'
+        : 'IBM watsonx is the default reviewer. Switch to OpenAI or Anthropic in Settings if you want a custom provider.';
+}
+
+function updateReviewModeUI() {
+  var reviewMode = document.getElementById('review-mode-select').value;
+  var screenshotToggle = document.getElementById('toggle-screenshots');
+  if (reviewMode === 'screenshot') {
+    screenshotToggle.checked = true;
+    screenshotToggle.disabled = true;
+  } else {
+    screenshotToggle.disabled = false;
+  }
 }
 
 function applySettings(settings) {
   currentSettings = settings || currentSettings;
   document.getElementById('provider-select').value = currentSettings.provider || 'ibm';
   document.getElementById('anthropic-api-key-input').value = currentSettings.anthropicApiKey || '';
+  document.getElementById('gemini-api-key-input').value = currentSettings.geminiApiKey || '';
+  document.getElementById('gemini-model-id-input').value = currentSettings.geminiModelId || '';
+  document.getElementById('openai-api-key-input').value = currentSettings.openaiApiKey || '';
+  document.getElementById('openai-model-id-input').value = currentSettings.openaiModelId || '';
   document.getElementById('ibm-api-key-input').value = currentSettings.ibmApiKey || '';
   document.getElementById('ibm-proxy-url-input').value = currentSettings.ibmProxyUrl || '';
   document.getElementById('ibm-endpoint-input').value = currentSettings.ibmEndpoint || '';
@@ -296,6 +401,8 @@ function applySettings(settings) {
 function renderFlowPreview(flow) {
   currentFlow = flow;
   document.getElementById('breadcrumb').textContent = flow.breadcrumb;
+  document.getElementById('review-mode-select').value = flow.reviewMode || 'hybrid';
+  updateReviewModeUI();
   var list = document.getElementById('step-list');
   list.innerHTML = '';
   flow.steps.forEach(function(step, i) {
@@ -312,6 +419,102 @@ function renderFlowPreview(flow) {
   initDrag(list);
   document.getElementById('no-reactions-banner').classList.toggle('hidden', !hadNoReactions);
   showScreen('preview');
+}
+
+function confidenceBucket(value) {
+  if (value >= 0.8) return 'high';
+  if (value >= 0.55) return 'medium';
+  return 'low';
+}
+
+function confidenceLabel(value) {
+  return Math.round((value || 0) * 100) + '% confidence';
+}
+
+function issueKey(issue) {
+  return (issue.frameId || '') + '::' + (issue.label || '');
+}
+
+function filteredIssues() {
+  if (!currentResult || !currentResult.issues) return [];
+  if (currentFilter === 'all') return currentResult.issues;
+  return currentResult.issues.filter(function(issue) {
+    return issue.severity === currentFilter;
+  });
+}
+
+function renderResultsIssues() {
+  var issueList = document.getElementById('results-issues');
+  var count = document.getElementById('results-count');
+  var issues = filteredIssues();
+  var total = currentResult && currentResult.issues ? currentResult.issues.length : 0;
+  issueList.innerHTML = '';
+  count.textContent = issues.length + ' of ' + total + ' shown';
+
+  if (!issues.length) {
+    issueList.innerHTML = '<div class="empty-issues">' + (total ? 'No issues match this filter.' : 'No major UX issues were flagged for this flow.') + '</div>';
+    return;
+  }
+
+  issues.forEach(function(issue) {
+    var step = (currentFlow && currentFlow.steps || []).find(function(candidate) {
+      return candidate.id === issue.frameId;
+    });
+    var key = issueKey(issue);
+    var noteValue = currentIssueClarifications[key] || '';
+    var issueStatus = currentIssueStatuses[key] || '';
+    var item = document.createElement('div');
+    item.className = 'issue-item';
+    item.innerHTML =
+      '<div class="issue-top">' +
+        '<div class="issue-title">' + esc(issue.label) + '</div>' +
+        '<div class="issue-top-meta">' +
+          '<div class="confidence ' + esc(confidenceBucket(issue.confidence || 0)) + '">' + esc(confidenceLabel(issue.confidence || 0)) + '</div>' +
+          '<div class="severity ' + esc(issue.severity) + '">' + esc(issue.severity) + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="issue-frame">Frame: ' + esc(step ? step.name : issue.frameId) + '</div>' +
+      '<div class="issue-evidence"><strong>Evidence:</strong> ' + esc(issue.evidence || 'No evidence supplied.') + '</div>' +
+      '<div class="issue-copy"><strong>Why it matters:</strong> ' + esc(issue.details) + '</div>' +
+      '<div class="issue-copy"><strong>Suggestion:</strong> ' + esc(issue.suggestion) + '</div>' +
+      (issueStatus ? '<div class="issue-status">' + esc(issueStatus) + '</div>' : '') +
+      '<textarea class="issue-note" data-issue-key="' + esc(key) + '" placeholder="Add clarification for this finding only, e.g. why this is intentional or constrained.">' + esc(noteValue) + '</textarea>' +
+      '<div class="issue-actions">' +
+        '<button type="button" class="btn btn-secondary btn-sm" data-jump-frame="' + esc(issue.frameId) + '">Jump To Frame</button>' +
+        '<button type="button" class="btn btn-secondary btn-sm" data-rethink-issue="' + esc(key) + '">Rethink This Finding</button>' +
+      '</div>';
+
+    item.querySelector('[data-jump-frame]').addEventListener('click', function() {
+      send({ type: 'JUMP_TO_FRAME', frameId: issue.frameId });
+    });
+    item.querySelector('[data-issue-key]').addEventListener('input', function(event) {
+      currentIssueClarifications[key] = event.target.value.trim();
+    });
+    item.querySelector('[data-rethink-issue]').addEventListener('click', function() {
+      if (!currentFlow) return;
+      var purpose = document.getElementById('purpose-input').value.trim();
+      var reviewMode = document.getElementById('review-mode-select').value;
+      pendingRethinkIssue = {
+        key: key,
+        frameId: issue.frameId,
+        label: issue.label
+      };
+      var nextFlow = Object.assign({}, currentFlow, {
+        flowPurpose: purpose || currentFlow.flowPurpose || '',
+        reviewMode: reviewMode,
+        issueClarifications: Object.assign({}, currentIssueClarifications, (function() {
+          var one = {};
+          if (currentIssueClarifications[key]) one[key] = currentIssueClarifications[key];
+          return one;
+        })())
+      });
+      currentFlow = nextFlow;
+      currentResult = null;
+      showAnalysisProgress('Rethinking finding with issue clarification…');
+      send({ type: 'ANALYZE_FLOW', flow: nextFlow });
+    });
+    issueList.appendChild(item);
+  });
 }
 
 function initDrag(list) {
@@ -349,36 +552,34 @@ function showAnalysisProgress(message) {
 
 function renderAnalysis(result) {
   currentResult = result;
-  var summary = document.getElementById('analysis-summary');
-  var issueList = document.getElementById('issue-list');
-  var card = document.getElementById('analysis-card');
-
-  summary.textContent = result.summary || 'Analysis completed.';
-  issueList.innerHTML = '';
-
-  if (!result.issues || result.issues.length === 0) {
-    issueList.innerHTML = '<div class="issue-item"><div class="issue-copy">No major UX issues were flagged for this flow.</div></div>';
-  } else {
-    result.issues.forEach(function(issue) {
-      var step = (currentFlow && currentFlow.steps || []).find(function(candidate) {
-        return candidate.id === issue.frameId;
-      });
-      var item = document.createElement('div');
-      item.className = 'issue-item';
-      item.innerHTML =
-        '<div class="issue-top">' +
-          '<div class="issue-title">' + esc(issue.label) + '</div>' +
-          '<div class="severity ' + esc(issue.severity) + '">' + esc(issue.severity) + '</div>' +
-        '</div>' +
-        '<div class="issue-frame">Frame: ' + esc(step ? step.name : issue.frameId) + '</div>' +
-        '<div class="issue-copy"><strong>Why it matters:</strong> ' + esc(issue.details) + '</div>' +
-        '<div class="issue-copy"><strong>Suggestion:</strong> ' + esc(issue.suggestion) + '</div>';
-      issueList.appendChild(item);
+  currentFilter = 'all';
+  document.getElementById('results-summary').textContent = result.summary || 'Analysis completed.';
+  currentIssueClarifications = currentFlow && currentFlow.issueClarifications ? Object.assign({}, currentFlow.issueClarifications) : {};
+  var rethinkStatusEl = document.getElementById('rethink-status');
+  rethinkStatusEl.classList.add('hidden');
+  rethinkStatusEl.textContent = '';
+  if (pendingRethinkIssue) {
+    var exact = (result.issues || []).find(function(issue) {
+      return issueKey(issue) === pendingRethinkIssue.key;
     });
+    var sameFrame = !exact && (result.issues || []).find(function(issue) {
+      return issue.frameId === pendingRethinkIssue.frameId;
+    });
+    var statusMessage = exact
+      ? 'Clarification applied. The AI reconsidered this finding and still believes it is valid.'
+      : sameFrame
+        ? 'Clarification applied. The AI reconsidered this finding and revised or reframed it.'
+        : 'Clarification applied. The AI reconsidered this finding and no longer flags it.';
+    rethinkStatusEl.textContent = statusMessage;
+    rethinkStatusEl.classList.remove('hidden');
+    currentIssueStatuses[pendingRethinkIssue.key] = statusMessage;
+    pendingRethinkIssue = null;
   }
-
-  card.classList.add('visible');
-  showScreen('preview');
+  document.querySelectorAll('.filter-chip').forEach(function(el) {
+    el.classList.toggle('active', el.dataset.filter === 'all');
+  });
+  renderResultsIssues();
+  showScreen('results');
 }
 
 window.onmessage = function(event) {
@@ -431,21 +632,28 @@ document.getElementById('btn-analyze').addEventListener('click', function() {
     currentFlow = Object.assign({}, currentFlow, { flowPurpose: purpose });
   }
   currentResult = null;
-  document.getElementById('analysis-card').classList.remove('visible');
-  var skipScreenshots = !document.getElementById('toggle-screenshots').checked;
+  pendingRethinkIssue = null;
+  var reviewMode = document.getElementById('review-mode-select').value;
+  currentFlow = Object.assign({}, currentFlow, {
+    reviewMode: reviewMode,
+    issueClarifications: Object.assign({}, currentIssueClarifications)
+  });
+  var skipScreenshots = reviewMode === 'screenshot' ? false : !document.getElementById('toggle-screenshots').checked;
   showScreen('exporting');
   updateProgress(0, currentFlow.steps.length);
   send({ type: 'CONFIRM_FLOW', flow: currentFlow, skipScreenshots: skipScreenshots });
 });
 
-document.getElementById('btn-place-indicators').addEventListener('click', function() {
+document.getElementById('btn-place-indicators-results').addEventListener('click', function() {
   if (!currentResult || !currentResult.issues || currentResult.issues.length === 0) return;
   send({
     type: 'PLACE_INDICATORS',
     issues: currentResult.issues.map(function(issue) {
       return {
         frameId: issue.frameId,
-        label: (issue.severity === 'high' ? 'High: ' : issue.severity === 'medium' ? 'Med: ' : 'Low: ') + issue.label
+        label: (issue.severity === 'high' ? 'High: ' : issue.severity === 'medium' ? 'Med: ' : 'Low: ') + issue.label,
+        targetText: issue.targetText || '',
+        evidence: issue.evidence || ''
       };
     })
   });
@@ -454,13 +662,29 @@ document.getElementById('btn-place-indicators').addEventListener('click', functi
 document.getElementById('btn-settings-empty').addEventListener('click', function() { showScreen('settings'); });
 document.getElementById('btn-settings-preview').addEventListener('click', function() { showScreen('settings'); });
 document.getElementById('btn-settings-back').addEventListener('click', function() {
-  showScreen(currentFlow ? 'preview' : 'loading');
+  showScreen(previousNonSettingsScreen || (currentFlow ? 'preview' : 'loading'));
 });
+document.getElementById('btn-results-back').addEventListener('click', function() { showScreen('preview'); });
+document.getElementById('btn-results-rerun').addEventListener('click', function() { showScreen('preview'); });
 document.getElementById('provider-select').addEventListener('change', updateProviderUI);
+document.getElementById('review-mode-select').addEventListener('change', updateReviewModeUI);
+document.querySelectorAll('.filter-chip').forEach(function(el) {
+  el.addEventListener('click', function() {
+    currentFilter = el.dataset.filter || 'all';
+    document.querySelectorAll('.filter-chip').forEach(function(button) {
+      button.classList.toggle('active', button === el);
+    });
+    renderResultsIssues();
+  });
+});
 document.getElementById('btn-save-settings').addEventListener('click', function() {
   var settings = {
     provider: document.getElementById('provider-select').value,
     anthropicApiKey: document.getElementById('anthropic-api-key-input').value.trim(),
+    geminiApiKey: document.getElementById('gemini-api-key-input').value.trim(),
+    geminiModelId: document.getElementById('gemini-model-id-input').value.trim(),
+    openaiApiKey: document.getElementById('openai-api-key-input').value.trim(),
+    openaiModelId: document.getElementById('openai-model-id-input').value.trim(),
     ibmApiKey: document.getElementById('ibm-api-key-input').value.trim(),
     ibmProxyUrl: document.getElementById('ibm-proxy-url-input').value.trim(),
     ibmEndpoint: document.getElementById('ibm-endpoint-input').value.trim(),
@@ -474,6 +698,7 @@ document.getElementById('btn-save-settings').addEventListener('click', function(
 document.getElementById('btn-cancel').addEventListener('click', function() { send({ type: 'CANCEL' }); });
 
 updateProviderUI();
+updateReviewModeUI();
 </script>
 </body>
 </html>
