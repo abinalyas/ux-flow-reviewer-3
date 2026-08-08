@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <style>
+      html, body { margin: 0; padding: 0; height: 100%; background: #000; overflow: hidden; }
+      #player { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="player"></div>
+    <script>
+      var player = null;
+      var apiReady = false;
+      var pendingVideoId = null;
+      var ticker = null;
+
+      function post(event, payload) {
+        var body = { event: event };
+        if (payload) {
+          for (var key in payload) {
+            if (Object.prototype.hasOwnProperty.call(payload, key)) body[key] = payload[key];
+          }
+        }
+        try {
+          window.webkit.messageHandlers.player.postMessage(body);
+        } catch (e) {
+          /* bridge not attached yet */
+        }
+      }
+
+      // The IFrame Player API calls this global once youtube.com/iframe_api finishes loading.
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '100%',
+          width: '100%',
+          playerVars: {
+            playsinline: 1,
+            controls: 1,
+            rel: 0,
+            fs: 0,
+            modestbranding: 1,
+            // Must match the baseURL the Swift side loads this document with,
+            // otherwise the IFrame API rejects the embed as cross-origin.
+            origin: 'https://www.youtube.com'
+          },
+          events: {
+            onReady: handleReady,
+            onStateChange: handleStateChange,
+            onError: handleError
+          }
+        });
+      }
+
+      function handleReady() {
+        apiReady = true;
+        post('ready');
+        if (pendingVideoId) {
+          var id = pendingVideoId;
+          pendingVideoId = null;
+          player.loadVideoById(id);
+        }
+        if (ticker === null) ticker = setInterval(emitProgress, 500);
+      }
+
+      function handleStateChange(event) {
+        post('state', {
+          state: event.data,
+          time: safeTime(),
+          duration: safeDuration()
+        });
+      }
+
+      function handleError(event) {
+        post('error', { code: event.data });
+      }
+
+      function safeTime() {
+        return player && player.getCurrentTime ? player.getCurrentTime() || 0 : 0;
+      }
+
+      function safeDuration() {
+        return player && player.getDuration ? player.getDuration() || 0 : 0;
+      }
+
+      function emitProgress() {
+        if (!apiReady) return;
+        post('time', { time: safeTime(), duration: safeDuration() });
+      }
+
+      // ---- Commands invoked from Swift via evaluateJavaScript ----
+
+      function loadVideo(videoId) {
+        if (!apiReady) {
+          pendingVideoId = videoId;
+          return;
+        }
+        player.loadVideoById(videoId);
+      }
+
+      function playVideo() {
+        if (apiReady) player.playVideo();
+      }
+
+      function pauseVideo() {
+        if (apiReady) player.pauseVideo();
+      }
+
+      function seekTo(seconds) {
+        if (apiReady) player.seekTo(seconds, true);
+      }
+
+      function setVolume(value) {
+        if (apiReady) player.setVolume(value);
+      }
+
+      var tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+    </script>
+  </body>
+</html>

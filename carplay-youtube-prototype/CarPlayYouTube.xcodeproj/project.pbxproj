@@ -1,0 +1,465 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		20B37997AC8D592736EBCE7B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F956D2F99D0CB51366486E6 /* Assets.xcassets */; };
+		2D95030B7D49B25C1D73C696 /* CarRootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984C58EC0C8B92371F58788B /* CarRootViewController.swift */; };
+		3289C1B303F108AB76DA9793 /* PhoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F476B1309E6D152E1D7A0A9 /* PhoneViewController.swift */; };
+		493BE7718842D47BA3040542 /* player.html in Resources */ = {isa = PBXBuildFile; fileRef = 9164905DAB3459E9E448B84A /* player.html */; };
+		5A7D8002A68AE7EA226560C2 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDFB22CEAD09C9CFF8C5635 /* Video.swift */; };
+		78257994C48D576FE8408E68 /* CarDisplayPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D78FC6B60F1594815F9322 /* CarDisplayPresenter.swift */; };
+		88867D0C81F07BF46CC48781 /* VideoCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20A525FA6DB9DC7C24679CD /* VideoCatalog.swift */; };
+		89C2AC47C25630C1A84EFC8C /* catalog.json in Resources */ = {isa = PBXBuildFile; fileRef = FCFECDF6B41E590812983292 /* catalog.json */; };
+		8D11710E6F06911578D1B683 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 564891F28C8CDC1A56AF3D0E /* Foundation.framework */; };
+		95928588381333D3150C6896 /* PhoneSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AACDE652DB1C26456006875 /* PhoneSceneDelegate.swift */; };
+		9C128B95C68005D400989A6D /* YouTubePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F574CAB33F6996605C33B /* YouTubePlayerView.swift */; };
+		A2F5223232114348DEEAA8AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC183B82BDE49CCF8C5C7E1 /* AppDelegate.swift */; };
+		D3D94C3DD67312F6ECC00CDF /* VideoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5BA8B61FA4FB9A3E1323DCE /* VideoListViewController.swift */; };
+		DC28108E0FB8E29F142A735A /* NowPlayingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745D155CF33FA5FE9A41AEF0 /* NowPlayingController.swift */; };
+		EA4EF28D9008FA22350C5FFA /* PlaybackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F2AB9B1EAACDC87BE915C9 /* PlaybackController.swift */; };
+		FE140CF5454525E6D00EF89C /* ExternalDisplaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A38F6DB69A5522CBD096842 /* ExternalDisplaySceneDelegate.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1B9439353D42D7DB7D0E4965 /* Secrets.example.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Secrets.example.xcconfig; sourceTree = "<group>"; };
+		2A38F6DB69A5522CBD096842 /* ExternalDisplaySceneDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ExternalDisplaySceneDelegate.swift; sourceTree = "<group>"; };
+		2F956D2F99D0CB51366486E6 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		32AD44912A2D3CE50499D41C /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3AACDE652DB1C26456006875 /* PhoneSceneDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhoneSceneDelegate.swift; sourceTree = "<group>"; };
+		3DDFB22CEAD09C9CFF8C5635 /* Video.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
+		4D4F574CAB33F6996605C33B /* YouTubePlayerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = YouTubePlayerView.swift; sourceTree = "<group>"; };
+		564891F28C8CDC1A56AF3D0E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		6EC183B82BDE49CCF8C5C7E1 /* AppDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		6F476B1309E6D152E1D7A0A9 /* PhoneViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhoneViewController.swift; sourceTree = "<group>"; };
+		70D78FC6B60F1594815F9322 /* CarDisplayPresenter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CarDisplayPresenter.swift; sourceTree = "<group>"; };
+		745D155CF33FA5FE9A41AEF0 /* NowPlayingController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NowPlayingController.swift; sourceTree = "<group>"; };
+		7CB4EF64BF13BE6215991EB0 /* CarPlayYouTube.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CarPlayYouTube.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9164905DAB3459E9E448B84A /* player.html */ = {isa = PBXFileReference; includeInIndex = 1; path = player.html; sourceTree = "<group>"; };
+		984C58EC0C8B92371F58788B /* CarRootViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CarRootViewController.swift; sourceTree = "<group>"; };
+		A20A525FA6DB9DC7C24679CD /* VideoCatalog.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VideoCatalog.swift; sourceTree = "<group>"; };
+		C5BA8B61FA4FB9A3E1323DCE /* VideoListViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VideoListViewController.swift; sourceTree = "<group>"; };
+		C8F2AB9B1EAACDC87BE915C9 /* PlaybackController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PlaybackController.swift; sourceTree = "<group>"; };
+		FCFECDF6B41E590812983292 /* catalog.json */ = {isa = PBXFileReference; includeInIndex = 1; path = catalog.json; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		86B12136B5D0789B90B41EAC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11710E6F06911578D1B683 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0201F2829E2DE5B3899CDE4E /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				C5BA8B61FA4FB9A3E1323DCE /* VideoListViewController.swift */,
+			);
+			name = Shared;
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		16BA2BF65148E5BC8355585F /* App */ = {
+			isa = PBXGroup;
+			children = (
+				6EC183B82BDE49CCF8C5C7E1 /* AppDelegate.swift */,
+				2A38F6DB69A5522CBD096842 /* ExternalDisplaySceneDelegate.swift */,
+				3AACDE652DB1C26456006875 /* PhoneSceneDelegate.swift */,
+			);
+			name = App;
+			path = App;
+			sourceTree = "<group>";
+		};
+		19BC835D195D5FEADADF94E3 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				564891F28C8CDC1A56AF3D0E /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		5B20FE36BFF6D55ADEC1FF25 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				1B9439353D42D7DB7D0E4965 /* Secrets.example.xcconfig */,
+			);
+			name = Config;
+			path = Config;
+			sourceTree = "<group>";
+		};
+		5EE6117AD1870DEA408324E6 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				16BA2BF65148E5BC8355585F /* App */,
+				9131AD0409085AE277520622 /* CarDisplay */,
+				7666E46F9017C8B4A5F25E93 /* Catalog */,
+				A2D24A17F68AB66729A98F36 /* Phone */,
+				6B8D2458A14C9DEEA548E3C7 /* Player */,
+				0201F2829E2DE5B3899CDE4E /* Shared */,
+			);
+			name = Sources;
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		6B8D2458A14C9DEEA548E3C7 /* Player */ = {
+			isa = PBXGroup;
+			children = (
+				745D155CF33FA5FE9A41AEF0 /* NowPlayingController.swift */,
+				C8F2AB9B1EAACDC87BE915C9 /* PlaybackController.swift */,
+				4D4F574CAB33F6996605C33B /* YouTubePlayerView.swift */,
+			);
+			name = Player;
+			path = Player;
+			sourceTree = "<group>";
+		};
+		7666E46F9017C8B4A5F25E93 /* Catalog */ = {
+			isa = PBXGroup;
+			children = (
+				3DDFB22CEAD09C9CFF8C5635 /* Video.swift */,
+				A20A525FA6DB9DC7C24679CD /* VideoCatalog.swift */,
+			);
+			name = Catalog;
+			path = Catalog;
+			sourceTree = "<group>";
+		};
+		85BB3548CB53A821E0CF9382 = {
+			isa = PBXGroup;
+			children = (
+				C32184A07081FCD095DF352A /* Products */,
+				8F5FEA1FEAA86893E3E8068B /* Frameworks */,
+				5EE6117AD1870DEA408324E6 /* Sources */,
+				AD4005559F4A890CE437B5DB /* Resources */,
+				5B20FE36BFF6D55ADEC1FF25 /* Config */,
+			);
+			sourceTree = "<group>";
+		};
+		8F5FEA1FEAA86893E3E8068B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				19BC835D195D5FEADADF94E3 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9131AD0409085AE277520622 /* CarDisplay */ = {
+			isa = PBXGroup;
+			children = (
+				70D78FC6B60F1594815F9322 /* CarDisplayPresenter.swift */,
+				984C58EC0C8B92371F58788B /* CarRootViewController.swift */,
+			);
+			name = CarDisplay;
+			path = CarDisplay;
+			sourceTree = "<group>";
+		};
+		A2D24A17F68AB66729A98F36 /* Phone */ = {
+			isa = PBXGroup;
+			children = (
+				6F476B1309E6D152E1D7A0A9 /* PhoneViewController.swift */,
+			);
+			name = Phone;
+			path = Phone;
+			sourceTree = "<group>";
+		};
+		AD4005559F4A890CE437B5DB /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				9164905DAB3459E9E448B84A /* player.html */,
+				FCFECDF6B41E590812983292 /* catalog.json */,
+				2F956D2F99D0CB51366486E6 /* Assets.xcassets */,
+				32AD44912A2D3CE50499D41C /* Info.plist */,
+			);
+			name = Resources;
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		C32184A07081FCD095DF352A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7CB4EF64BF13BE6215991EB0 /* CarPlayYouTube.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D04C27DC8D8E1F692CE1785B /* CarPlayYouTube */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF4C82CADAFB04BD2A2B7E90 /* Build configuration list for PBXNativeTarget "CarPlayYouTube" */;
+			buildPhases = (
+				210210DADBE16F394E95EEF1 /* Sources */,
+				86B12136B5D0789B90B41EAC /* Frameworks */,
+				E20E8BB6EAEAB378A97FD0DA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CarPlayYouTube;
+			productName = CarPlayYouTube;
+			productReference = 7CB4EF64BF13BE6215991EB0 /* CarPlayYouTube.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		54B2937946DE3FE2FF1289B3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+			};
+			buildConfigurationList = 68BCD89E503CD45D96B10103 /* Build configuration list for PBXProject "CarPlayYouTube" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 85BB3548CB53A821E0CF9382;
+			minimizedProjectReferenceProxies = 0;
+			preferredProjectObjectVersion = 100;
+			productRefGroup = C32184A07081FCD095DF352A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D04C27DC8D8E1F692CE1785B /* CarPlayYouTube */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E20E8BB6EAEAB378A97FD0DA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				493BE7718842D47BA3040542 /* player.html in Resources */,
+				89C2AC47C25630C1A84EFC8C /* catalog.json in Resources */,
+				20B37997AC8D592736EBCE7B /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		210210DADBE16F394E95EEF1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A2F5223232114348DEEAA8AE /* AppDelegate.swift in Sources */,
+				FE140CF5454525E6D00EF89C /* ExternalDisplaySceneDelegate.swift in Sources */,
+				95928588381333D3150C6896 /* PhoneSceneDelegate.swift in Sources */,
+				78257994C48D576FE8408E68 /* CarDisplayPresenter.swift in Sources */,
+				2D95030B7D49B25C1D73C696 /* CarRootViewController.swift in Sources */,
+				5A7D8002A68AE7EA226560C2 /* Video.swift in Sources */,
+				88867D0C81F07BF46CC48781 /* VideoCatalog.swift in Sources */,
+				3289C1B303F108AB76DA9793 /* PhoneViewController.swift in Sources */,
+				DC28108E0FB8E29F142A735A /* NowPlayingController.swift in Sources */,
+				EA4EF28D9008FA22350C5FFA /* PlaybackController.swift in Sources */,
+				9C128B95C68005D400989A6D /* YouTubePlayerView.swift in Sources */,
+				D3D94C3DD67312F6ECC00CDF /* VideoListViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2EAB06E1F24620C88026858A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		5FAFAB29ADA6D69C93F962F3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.CarPlayYouTube;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		FAB32C1A86E4121130B1E405 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		FE0B03645374B189C927E868 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.CarPlayYouTube;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		68BCD89E503CD45D96B10103 /* Build configuration list for PBXProject "CarPlayYouTube" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAB32C1A86E4121130B1E405 /* Debug */,
+				2EAB06E1F24620C88026858A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BF4C82CADAFB04BD2A2B7E90 /* Build configuration list for PBXNativeTarget "CarPlayYouTube" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5FAFAB29ADA6D69C93F962F3 /* Release */,
+				FE0B03645374B189C927E868 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 54B2937946DE3FE2FF1289B3 /* Project object */;
+}

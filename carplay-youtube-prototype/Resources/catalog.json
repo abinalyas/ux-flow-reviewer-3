@@ -1,0 +1,34 @@
+{
+  "videos": [
+    {
+      "id": "aqz-KE-bpKQ",
+      "title": "Big Buck Bunny",
+      "channel": "Blender Foundation",
+      "durationSeconds": 635
+    },
+    {
+      "id": "eRsGyueVLvQ",
+      "title": "Sintel — Official Trailer",
+      "channel": "Blender Foundation",
+      "durationSeconds": 52
+    },
+    {
+      "id": "R6MlUcmOul8",
+      "title": "Tears of Steel",
+      "channel": "Blender Foundation",
+      "durationSeconds": 734
+    },
+    {
+      "id": "WhWc3b3KhnY",
+      "title": "Spring",
+      "channel": "Blender Studio",
+      "durationSeconds": 465
+    },
+    {
+      "id": "cUYSGojUuAU",
+      "title": "Coffee Run",
+      "channel": "Blender Studio",
+      "durationSeconds": 234
+    }
+  ]
+}
