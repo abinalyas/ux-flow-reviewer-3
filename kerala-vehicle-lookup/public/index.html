@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Vehicle &amp; challan lookup</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f6f7f9;
+        --surface: #ffffff;
+        --border: #e2e5ea;
+        --text: #14181f;
+        --muted: #626b7a;
+        --accent: #0b6b53;
+        --danger: #b3261e;
+        --warn-bg: #fff6e5;
+        --warn-border: #e8c48a;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #14171c;
+          --surface: #1c2027;
+          --border: #2c323b;
+          --text: #e8eaed;
+          --muted: #9aa3b0;
+          --accent: #4ec9a4;
+          --danger: #f2857c;
+          --warn-bg: #33290f;
+          --warn-border: #6b5520;
+        }
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 2rem 1rem 4rem;
+        background: var(--bg);
+        color: var(--text);
+        font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+      main { max-width: 720px; margin: 0 auto; }
+      h1 { font-size: 1.4rem; margin: 0 0 .25rem; }
+      .sub { color: var(--muted); margin: 0 0 1.5rem; font-size: .9rem; }
+      form { display: flex; gap: .5rem; margin-bottom: 1rem; }
+      input {
+        flex: 1; padding: .7rem .85rem; font-size: 1rem; letter-spacing: .06em;
+        text-transform: uppercase; border: 1px solid var(--border); border-radius: 8px;
+        background: var(--surface); color: var(--text);
+      }
+      input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+      button {
+        padding: .7rem 1.2rem; font-size: 1rem; font-weight: 600; border: 0; border-radius: 8px;
+        background: var(--accent); color: #fff; cursor: pointer;
+      }
+      button:disabled { opacity: .55; cursor: default; }
+      .card {
+        background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+        padding: 1rem 1.15rem; margin-bottom: 1rem;
+      }
+      .card h2 { font-size: .78rem; text-transform: uppercase; letter-spacing: .09em;
+        color: var(--muted); margin: 0 0 .75rem; }
+      dl { display: grid; grid-template-columns: minmax(9rem, auto) 1fr; gap: .4rem 1rem; margin: 0; }
+      dt { color: var(--muted); }
+      dd { margin: 0; }
+      .plate { font-size: 1.25rem; font-weight: 700; letter-spacing: .1em; }
+      .total { font-size: 1.5rem; font-weight: 700; }
+      .total.due { color: var(--danger); }
+      .total.clear { color: var(--accent); }
+      .challan { border-top: 1px solid var(--border); padding: .7rem 0; }
+      .challan:first-of-type { border-top: 0; padding-top: 0; }
+      .row { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; }
+      .tag {
+        font-size: .7rem; font-weight: 700; letter-spacing: .06em; padding: .12rem .45rem;
+        border-radius: 4px; border: 1px solid var(--border); color: var(--muted);
+      }
+      .tag.PENDING, .tag.IN_COURT { color: var(--danger); border-color: var(--danger); }
+      .tag.PAID { color: var(--accent); border-color: var(--accent); }
+      .meta { color: var(--muted); font-size: .82rem; }
+      .banner {
+        background: var(--warn-bg); border: 1px solid var(--warn-border);
+        border-radius: 8px; padding: .6rem .8rem; margin-bottom: 1rem; font-size: .85rem;
+      }
+      .error { color: var(--danger); }
+      .hidden { display: none; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Vehicle &amp; challan lookup</h1>
+      <p class="sub">Enter a registration number to fetch vehicle details and outstanding challans.</p>
+
+      <div id="mock-banner" class="banner hidden">
+        Running on the <strong>mock provider</strong> — every result below is synthetic sample data,
+        not a real record.
+      </div>
+
+      <form id="form">
+        <input
+          id="regno"
+          name="regno"
+          placeholder="KL 07 BX 1234"
+          autocomplete="off"
+          autocapitalize="characters"
+          spellcheck="false"
+          required
+          aria-label="Registration number"
+        />
+        <button type="submit" id="submit">Look up</button>
+      </form>
+
+      <p id="status" class="meta" role="status" aria-live="polite"></p>
+      <div id="result"></div>
+    </main>
+
+    <script>
+      const form = document.getElementById('form');
+      const input = document.getElementById('regno');
+      const submit = document.getElementById('submit');
+      const statusEl = document.getElementById('status');
+      const resultEl = document.getElementById('result');
+
+      const esc = (value) =>
+        String(value ?? '—').replace(/[&<>"']/g, (c) =>
+          ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c],
+        );
+      const money = (n) => '₹' + Number(n || 0).toLocaleString('en-IN');
+
+      fetch('/healthz')
+        .then((r) => r.json())
+        .then((h) => {
+          if (h.provider === 'mock') document.getElementById('mock-banner').classList.remove('hidden');
+        })
+        .catch(() => {});
+
+      function rows(pairs) {
+        return pairs
+          .filter(([, value]) => value !== null && value !== undefined && value !== '')
+          .map(([label, value]) => `<dt>${esc(label)}</dt><dd>${esc(value)}</dd>`)
+          .join('');
+      }
+
+      function render(data) {
+        const parts = [];
+
+        parts.push(`<div class="card">
+          <h2>Plate</h2>
+          <p class="plate">${esc(data.plate.formatted)}</p>
+          <dl>${rows([
+            ['State', data.plate.stateName || data.plate.stateCode],
+            ['Registering office', data.plate.rtoOffice || 'Unknown (not in local RTO table)'],
+          ])}</dl>
+        </div>`);
+
+        const pending = data.summary.pendingCount > 0;
+        parts.push(`<div class="card">
+          <h2>Outstanding</h2>
+          <p class="total ${pending ? 'due' : 'clear'}">
+            ${pending ? money(data.summary.pendingAmount) : 'No pending challans'}
+          </p>
+          <p class="meta">${data.summary.pendingCount} pending of ${data.summary.totalCount} total</p>
+        </div>`);
+
+        const v = data.vehicle;
+        parts.push(`<div class="card">
+          <h2>Vehicle</h2>
+          ${
+            v
+              ? `<dl>${rows([
+                  ['Owner', v.ownerName],
+                  ['Make / model', [v.makerDescription, v.makerModel].filter(Boolean).join(' ')],
+                  ['Class', v.vehicleClass],
+                  ['Fuel', v.fuelType],
+                  ['Colour', v.colour],
+                  ['Registered on', v.registrationDate],
+                  ['Authority', v.registeringAuthority],
+                  ['RC status', v.rcStatus],
+                  ['Chassis', v.chassisNumber],
+                  ['Insurer', v.insurance && v.insurance.provider],
+                  ['Insurance valid to', v.insurance && v.insurance.validUpto],
+                  ['PUC valid to', v.pucValidUpto],
+                  ['Tax valid to', v.taxValidUpto],
+                  ['Financier', v.financier],
+                ])}</dl>`
+              : '<p class="meta">No vehicle record returned for this number.</p>'
+          }
+        </div>`);
+
+        if (data.challans.length) {
+          parts.push(`<div class="card">
+            <h2>Challans</h2>
+            ${data.challans
+              .map(
+                (c) => `<div class="challan">
+                  <div class="row">
+                    <strong>${esc(c.offences.join(', ') || 'Offence not specified')}</strong>
+                    <span class="tag ${esc(c.status)}">${esc(c.status.replace('_', ' '))}</span>
+                  </div>
+                  <div class="row">
+                    <span class="meta">${esc(c.challanDate)} &middot; ${esc(c.location)}</span>
+                    <strong>${money(c.amount)}</strong>
+                  </div>
+                  <p class="meta">No. ${esc(c.challanNumber)}${
+                    c.courtName ? ' &middot; ' + esc(c.courtName) : ''
+                  }</p>
+                </div>`,
+              )
+              .join('')}
+          </div>`);
+        }
+
+        if (data.meta.warnings.length) {
+          parts.push(
+            `<div class="banner">${data.meta.warnings.map((w) => esc(w)).join('<br />')}</div>`,
+          );
+        }
+
+        parts.push(`<p class="meta">provider: ${esc(data.meta.provider)} &middot;
+          privacy: ${esc(data.meta.privacyMode)} &middot;
+          ${data.meta.cached ? 'cached' : 'fresh'} &middot; ${esc(data.meta.elapsedMs)}ms</p>`);
+
+        resultEl.innerHTML = parts.join('');
+      }
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const value = input.value.trim();
+        if (!value) return;
+
+        submit.disabled = true;
+        statusEl.textContent = 'Looking up…';
+        statusEl.classList.remove('error');
+        resultEl.innerHTML = '';
+
+        try {
+          const response = await fetch(`/api/v1/vehicles/${encodeURIComponent(value)}`);
+          const body = await response.json();
+          if (!response.ok) {
+            statusEl.textContent = body.message || body.error || 'Lookup failed';
+            statusEl.classList.add('error');
+            return;
+          }
+          statusEl.textContent = '';
+          render(body);
+        } catch (error) {
+          statusEl.textContent = 'Could not reach the lookup service.';
+          statusEl.classList.add('error');
+        } finally {
+          submit.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
